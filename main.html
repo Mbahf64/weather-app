@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/f438edc6d8.js" crossorigin="anonymous"></script>
+    <!-- <script src="main.js" defer></script> -->
+    <link rel="stylesheet" href="main.css">
+   
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="weather-app">
+        <div class="container">
+            <h3 class="brand">The weather</h3>
+            <div>
+                <h1 class="temp">16&#176;</h1>
+                <div class="city-time">
+                    <h1 class="name">London</h1>
+
+                    <small>
+                        <span class="time">06:09</span>
+                        -
+                        <span class="date">Monday sep 19</span>
+                    </small>
+                </div>
+
+
+                <div class="weather">
+                    <img src="./day/113.png">
+
+                    <span class="condition">Cloudy</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="panel">
+            <form id="LocationInput">
+                <input type="text" class="search" placeholder="Search Location...">
+                <button type="submit" class="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <ul class="cities">
+                <li class="city">New York</li>
+                <li class="city">Carlifornia</li>
+                <li class="city">Paris</li>
+                <li class="city">Tokyo</li>
+            </ul>
+
+            <ul class="details">
+                <h4>weather Details</h4>
+
+                <li>
+                    <span>Cloudy</span>
+                    <span class="cloud">89%</span>
+                </li>
+
+                <li>
+                    <span>Humidity</span>
+                    <span class="Humidity">89%</span>
+                </li>
+
+                <li>
+                    <span>Wind</span>
+                    <span class="Wind">89%</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const timeOutput = document.querySelector('.time');
+const conditionOutput = document.querySelector('.condition');
+const nameOutput = document.querySelector('.name');
+const icon = document.querySelector('.icon');
+const cloudOutput = document.querySelector('.cloud');
+const humidityOutput = document.querySelector('.humidity');
+const windOutput = document.querySelector('.wind');
+const form = document.querySelector('locationInput');
+const search = document.querySelector('.Search');
+const btn = document.querySelector('.submit');
+const cities = document.querySelector('.city');
+
+
+let cityInput = "London";
+
+cities.forEach((city) => {
+    city.addEventListener('click', (e) => {
+
+        cityInput = e.target.innerHTML;
+
+        fetchWeatherData();
+
+        app.style.opacity = '0';
+    });
+
+})
+
+form.addEventListener('submit', (e) => {
+
+    if (search.value.length == 0) {
+        alert('please type in a city name');
+
+    } else {
+        cityInput = search.value;
+
+        fetchWeatherData();
+
+        search.value = '';
+
+        app.style.opacity = '0';
+    }
+
+    e.preventDefault();
+
+});
+
+
+function dayofTheWeek(day, month, year) {
+    const weekday = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ];
+
+    return weekday[new Date(`${day}/${month}/${year}`).getDay()];
+};
+
+function fetchWeatherData() {
+
+    fetch(`http://api.weatherapi.com/
+     v1/current.json?key= c3790f593264461d8e5163634222909 = ${cityInput}`)
+
+        .then(response => response.json())
+        .then(data => {
+
+                console.log(data);
+
+                timeOutput.innerHTML = data.current.temp_c + "&#176;";
+                conditionOutput.innerHTML = data.current.condition.text;
+
+
+                const data = data.location.localtime;
+                const y = parseInt(data.substr(0, 4))
+                const m = parseInt(data.substr(5, 2))
+                const d = parseInt(data.substr(8, 2))
+                const time = date.substr(11);
+
+
+                dataoutput.innerHTML = `${dayofTheweek(d, m, y)} ${d}, ${m} ${y}`
+
+                timeOutput.innerHTML = time;
+
+                nameOutput.innerHTML = data.location.name;
+
+                const iconId = data.current.condition.icon.substr(
+                    "//cdn.weatherapi.com/weather/64x64/".length);
+
+                icon.scr = "./icons/" + iconId;
+
+                cloudOutput.innerHTML = data.current.cloud + "%"
+                humidityOutput.innerHTML = data.current.humidity + "%";
+                windOutput.innerHTML = data.current.wind_kph + "kp/h";
+
+
+                let timeDay = "day";
+
+                const code = data.current.condition.code;
+
+                if (!data.current.is_day) {
+                    timeOfDay = "night";
+
+                }
+
+                if (code == 1000) {
+
+                    app.style.backgroundImage = `
+                ulr(./images/${timeOfDay}/clear.jpg)`;
+
+                    btn.style.background = "#e5ba92";
+                    if (timeOfDay == "night") {
+                        btn.style.background = "#181e27";
+                    }
+                } else if (
+                    code == 1003 ||
+                    code == 1006 ||
+                    code == 1030 ||
+                    code == 1069 ||
+                    code == 1087 ||
+                    code == 1135 ||
+                    code == 1273 ||
+                    code == 1276 ||
+                    code == 1279 ||
+                    code == 1282
+                ) {
+                    app.style.backgroundImage = `
+                ulr(./images/${timeOfDay}/cloudy.jpg)`;
+                    btn.style.background = "#fa6d1b";
+                    if (timeOfDay == "night") {
+                        btn.style.background = "#181e27";
+                    }
+
+                } else if (
+                    code == 1063 ||
+                    code == 1069 ||
+                    code == 1072 ||
+                    code == 1050 ||
+                    code == 1153 ||
+                    code == 1180 ||
+                    code == 1183 ||
+                    code == 1186 ||
+                    code == 1189 ||
+                    code == 1192 ||
+                    code == 1195 ||
+                    code == 1204 ||
+                    code == 1207 ||
+                    code == 1240 ||
+                    code == 1243 ||
+                    code == 1246 ||
+                    code == 1249 ||
+                    code == 1252
+                ) {
+                    app.style.backgroundImage = `
+                ulr(./images/${timeOfDay}/rainy.jpg)`;
+                    btn.style.background = "#647d75";
+                    if (timeOfDay == "night") {
+                        btn.style.background = "#325c80";
+                    }
+
+                } else {
+                    app.style.backgroundImage = `
+                ulr(./images/${timeOfDay}/snowy.jpg)`;
+                    btn.style.background = "#4d72aa";
+                    if(timeOfDay == "night") {
+                        btn.style.background = "#1b1b1b"; 
+
+                }
+            }
+
+            app.style.opacity = "1";
+
+        })
+
+        .catch(() => {
+            alert('city not found, please try again');
+            app.style.opacity = "1";
+        });
+    }
+
+    fetchWeatherData();
+
+    app.style.opacity = "1";
+    
+    </script>
+</body>
+
+</html>
